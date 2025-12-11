@@ -1,0 +1,204 @@
+Quoridor Game Project Report – Detailed Version
+1. Introduction
+
+This project implements a digital version of Quoridor, a strategic board game for 2–4 players.
+Key features:
+
+Player movement with jump and diagonal rules
+
+Wall placement with path validation
+
+AI opponents with multiple difficulty levels
+
+GUI for gameplay and interaction
+
+Objectives:
+
+Develop a functional, modular game
+
+Integrate AI decision-making
+
+Ensure rules compliance and responsive UI
+
+2. Design Decisions and Architecture
+2.1 Architecture Overview
+
+The project uses a modular approach with separation of concerns:
+
+GameState Module
+
+Stores the board, player positions, wall positions, current turn, and game history
+
+Handles move validation, wall placement validation, and win detection
+
+Example: GameState.place_wall(x, y, orientation) checks legality before committing
+
+Movement Module
+
+Calculates legal moves including jumps over opponents and diagonal moves
+
+Checks boundaries and walls dynamically
+
+WallPlacement Module
+
+Validates wall positions without blocking all paths
+
+Uses BFS pathfinding to simulate wall placement before committing
+
+Pathfinding Module
+
+BFS algorithm finds shortest paths for AI and validates wall legality
+
+Maintains efficiency even for larger boards (up to 12x12)
+
+AI Module
+
+Implements three difficulty levels:
+
+Easy: Random legal moves
+
+Medium: Path-based decisions with optional opponent blocking
+
+Hard: Strategic wall placement and goal path optimization
+
+GUI Module
+
+Tkinter-based interface for start screen, game board, player controls, and end game messages
+
+Highlights current player and legal moves
+
+Updates dynamically after each action
+
+2.2 Design Decisions
+
+Tkinter chosen for simplicity, fast prototyping, and cross-platform compatibility
+
+BFS pathfinding for efficient shortest path computation and wall legality checks
+
+Modularization enables independent testing of AI, movement, and GUI logic
+
+AI difficulty levels balance challenge for players and allow scalable improvements
+
+3. Implementation Challenges and Solutions
+3.1 Multi-Player Board and Wall Logic
+
+Challenge: Ensuring walls don’t fully block a player’s path
+
+Solution: Temporarily place walls, run BFS for all players to verify paths exist, then finalize placement
+
+Example: Player tries to place a vertical wall. The algorithm checks if each player still has a valid path to their goal. If not, the wall placement is denied.
+
+3.2 Player Movement
+
+Challenge: Implementing jumps and diagonals over other players
+
+Solution: Movement.get_legal_moves:
+
+Identifies adjacent cells
+
+Checks if another player is occupying that cell
+
+If blocked, computes jump or diagonal options
+
+Example: Player 1 is next to Player 2. If Player 2 is blocked by a wall, diagonal moves are allowed instead of straight jumps.
+
+3.3 AI Decision-Making
+
+Challenge: Balancing strategic play with performance
+
+Solution:
+
+Easy AI picks a random legal move
+
+Medium AI calculates shortest paths for itself and opponents, blocking if necessary
+
+Hard AI evaluates potential wall placements to maximize opponent path length and selects moves with highest strategic impact
+
+3.4 GUI and User Flow
+
+Challenge: Avoid freezing during AI turns and manage game state display
+
+Solution:
+
+Used Tkinter.Canvas for dynamic drawing
+
+AI moves handled with a small delay to update visuals smoothly
+
+Game over triggers hide all buttons and only show winning message
+
+4. AI Algorithm Explanation
+4.1 Easy AI
+
+Randomly selects a legal move or places a wall with low probability
+
+No strategy consideration
+
+4.2 Medium AI
+
+Calculates shortest path for itself using BFS
+
+Checks opponent distances to goal
+
+Places a wall only if it slows the leading opponent
+
+Moves toward its goal otherwise
+
+4.3 Hard AI
+
+Considers all legal wall placements
+
+Evaluates which wall increases opponent’s path length most
+
+Moves toward the shortest path to goal simultaneously
+
+Falls back to Medium AI strategy if no optimal wall is found
+
+4.4 Pathfinding Algorithm
+
+Breadth-First Search (BFS) for:
+
+Finding all reachable positions
+
+Calculating shortest paths
+
+Validating wall placements dynamically
+
+Ensures every player always has at least one path to the goal
+
+5. Assumptions Made During Development
+
+Maximum 4 players, AI only supports 1 opponent for 2-player games
+
+Board size configurable between 5x5 and 12x12
+
+Wall count adjusts based on board size: standard rules used for 9x9
+
+Walls cannot fully block a player from reaching goal
+
+Only one AI difficulty per game
+
+6. References and Resources Used
+
+Official Quoridor rules: https://www.quoridor.com
+
+Tkinter Documentation: https://docs.python.org/3/library/tkinter.html
+
+BFS and pathfinding tutorials
+
+Python pickle documentation for state saving/loading
+
+StackOverflow for AI logic and GUI updates
+
+7. Conclusion
+
+The project demonstrates:
+
+Modular, extensible code for game logic and AI
+
+Fully functional GUI with dynamic updates
+
+AI strategy implementation with adjustable difficulty
+
+Wall placement and path validation using BFS
+
+Clear separation of concerns for easier maintenance and testing
